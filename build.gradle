@@ -1,0 +1,126 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'org.openapi.generator' version '4.3.1'
+    id 'de.undercouch.download' version '4.1.1'
+    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '0.5'
+    id 'java'
+}
+
+group = 'de.codecentric'
+version = '0.0.2-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'junit:junit:4.12'
+
+    //compile 'io.springfox:springfox-swagger-ui:3.0.0'
+    //needed for swagger code generation
+    compile "io.springfox:springfox-swagger2:3.0.0"
+    compile "org.openapitools:jackson-databind-nullable:0.1.0"
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.h2database:h2'
+
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testCompile('com.intuit.karate:karate-junit5:0.9.6')
+    testCompile('com.intuit.karate:karate-apache:0.9.6')
+    testCompile('net.masterthought:cucumber-reporting:3.8.0')
+
+
+
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty('karate.options', System.properties.getProperty('karate.options'))
+    systemProperty('karate.env', System.properties.getProperty('karate.env'))
+    outputs.upToDateWhen { false }
+}
+
+task downloadFile(type: Download) {
+    src "https://raw.githubusercontent.com/codecentric/api-showcases/main/specs/news.yaml"
+    dest buildDir
+    onlyIfModified true
+    useETag true
+}
+
+openApiValidate {
+    inputSpec = "$buildDir/news.yaml"
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    library = "spring-boot"
+    inputSpec = "$buildDir/news.yaml"
+    configFile = "${projectDir}/openapi-generator-config.json"
+    outputDir = "${buildDir}/generated/open-api"
+}
+
+tasks.openApiGenerate.dependsOn tasks.downloadFile
+
+idea.project.settings {
+    taskTriggers {
+        beforeBuild tasks.openApiGenerate
+        beforeRebuild tasks.openApiGenerate
+        afterSync tasks.openApiGenerate
+        beforeSync tasks.openApiGenerate
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir.absolutePath}/generated/open-api/src/main/java"
+        }
+    }
+
+    test {
+        resources {
+            srcDir file('src/test/java')
+            exclude '**/*.java'
+        }
+    }
+}
+
+compileJava {
+    dependsOn tasks.openApiGenerate
+    source "${buildDir}/generated/open-api/src/main/java"
+}
+
+springBoot {
+    mainClassName = "de.codecentric.apifirstspringboot.ApifirstSpringbootApplication"
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
+}

@@ -1,0 +1,17 @@
+{
+  "useOptional": "true",
+  "swaggerDocketConfig": "false",
+  "performBeanValidation": "false",
+  "useBeanValidation": "false",
+  "useTags": "true",
+  "singleContentTypes": "true",
+  "basePackage": "de.codecentric.news.api",
+  "configPackage": "de.codecentric.news.api",
+  "java8": "false",
+  "dateLibrary": "java8",
+  "serializableModel": "true",
+  "apiPackage": "de.codecentric.news.api",
+  "modelPackage": "de.codecentric.news.api.model",
+  "invokerPackage": "de.codecentric.news.api",
+  "interfaceOnly": "true"
+}
