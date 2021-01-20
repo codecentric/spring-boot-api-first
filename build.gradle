@@ -35,21 +35,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'junit:junit:4.12'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
-    //compile 'io.springfox:springfox-swagger-ui:3.0.0'
+    compile 'io.springfox:springfox-swagger-ui:3.0.0'
     //needed for swagger code generation
     compile "io.springfox:springfox-swagger2:3.0.0"
     compile "org.openapitools:jackson-databind-nullable:0.1.0"
 
-    compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
 
-
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testCompile('com.intuit.karate:karate-junit5:0.9.6')
     testCompile('com.intuit.karate:karate-apache:0.9.6')
