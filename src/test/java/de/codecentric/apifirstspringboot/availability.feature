@@ -1,6 +1,9 @@
 Feature: News API
 
+  Background:
+    * url 'http://localhost:8080'
+
 Scenario: News API available
-  Given url 'http://localhost:8080/api/news'
+  Given path '/api/news'
   When method get
   Then status 200
