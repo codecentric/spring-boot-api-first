@@ -1,0 +1,76 @@
+openapi: 3.0.1
+servers:
+  - url: 'http://localhost:8080/api'
+info:
+  version: 1.0.0
+  title: News API
+  contact:
+    name: Daniel Kocot
+    url: 'http://www.codecentric.de'
+    email: daniel.kocot@codecentric.de
+  license:
+    name: MIT
+    url: https://www.tldrelgal.com/mit
+  description: An API to provide news
+tags:
+  - name: news
+paths:
+  /news:
+    get:
+      description: gets latest news
+      operationId: getNews
+      tags:
+        - news
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleList'
+              examples: {}
+components:
+  schemas:
+    ArticleList:
+      title: ArticleList
+      type: array
+      items:
+        $ref: '#/components/schemas/Article'
+    Article:
+      x-java-class-annotation:
+        - "@javax.persistence.Entity"
+      title: Article
+      description: A article is a part of a news.
+      type: object
+      properties:
+        id:
+          x-java-field-annotation:
+            - "@javax.persistence.Id"
+            - "@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)"
+          type: integer
+        title:
+          type: string
+        date:
+          type: string
+          format: date
+        description:
+          type: string
+        imageUrl:
+          type: string
+      required:
+        - id
+        - title
+        - date
+        - description
+        - imageUrl
+  securitySchemes: {}
+  examples:
+    news:
+      value:
+        description: Example shared example
+        type: object
+        properties:
+          id:
+            type: string
+        required:
+          - id

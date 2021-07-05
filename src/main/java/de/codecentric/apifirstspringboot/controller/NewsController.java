@@ -1,29 +1,28 @@
 package de.codecentric.apifirstspringboot.controller;
 
+import de.codecentric.apifirstspringboot.repository.NewsRepository;
 import de.codecentric.apifirstspringboot.service.NewsService;
-import de.codecentric.news.api.model.Article;
-import org.springframework.http.HttpStatus;
+import de.codecentric.generated.news.api.NewsApi;
+import de.codecentric.generated.news.model.Article;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import springfox.documentation.oas.annotations.EnableOpenApi;
 
 import java.util.List;
 
-@EnableOpenApi
-@RequestMapping("/api")
+import static de.codecentric.apifirstspringboot.mapper.ArticleModelMapper.toApi;
+
 @Controller
-public class NewsController {
+public class NewsController implements NewsApi {
 
-    private final NewsService newsService;
+    @Autowired
+    private NewsService newsService;
 
-    public NewsController(NewsService newsService) {
-        this.newsService = newsService;
-    }
-
-    @GetMapping("/news")
+    @Override
     public ResponseEntity<List<Article>> getNews() {
-        return new ResponseEntity<>(this.newsService.getNews(), HttpStatus.OK);
+        List<de.codecentric.apifirstspringboot.entities.Article> allArticles = newsService.retrieveAllArticles();
+        return ResponseEntity.ok().body(toApi(allArticles));
     }
 }

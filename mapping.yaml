@@ -1,0 +1,11 @@
+openapi-processor-mapping: v2
+
+options:
+  package-name: de.codecentric.generated.news
+
+map:
+  result: org.springframework.http.ResponseEntity
+
+  types:
+    - type: array => java.util.List
+

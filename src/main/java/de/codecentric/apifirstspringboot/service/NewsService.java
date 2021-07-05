@@ -1,26 +1,33 @@
 package de.codecentric.apifirstspringboot.service;
 
-import de.codecentric.news.api.model.Article;
+import de.codecentric.apifirstspringboot.entities.Article;
+import de.codecentric.apifirstspringboot.repository.NewsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class NewsService {
 
-    public List<Article> getNews() {
-        List<Article> articles = new ArrayList<>();
-        Article article = new Article();
-        article.setDate(LocalDate.now());
-        article.setDescription("An article description");
-        article.setId(UUID.randomUUID());
-        article.setImageUrl("https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3450&q=80");
-        article.setTitle("A title");
-        articles.add(article);
-        return articles;
+    private final NewsRepository newsRepository;
+
+    @Autowired
+    public NewsService(NewsRepository newsRepository) {
+        this.newsRepository = newsRepository;
+    }
+
+    public Article createArticle(Article article) {
+        return newsRepository.save(article);
+    }
+
+    public List<Article> retrieveAllArticles() {
+        return newsRepository.findAll();
+    }
+
+    public Article findArticle(Long articleId) {
+        return newsRepository.getOne(articleId);
     }
 
 }
