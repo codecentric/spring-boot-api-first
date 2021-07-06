@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.3.5.RELEASE'
+    id 'org.springframework.boot' version '2.5.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'de.undercouch.download' version '4.1.1'
     id 'org.jetbrains.gradle.plugin.idea-ext' version '0.5'
